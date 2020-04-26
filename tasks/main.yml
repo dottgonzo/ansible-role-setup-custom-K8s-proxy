@@ -1,16 +1,13 @@
 ---
-
 - name: Install Ingress Nginx
-  include_role:
-    name: dottgonzo.ansible_role_kubectl_from_local_file
-  vars:
-    local_file_path: "~/.ansible/roles/dottgonzo.ansible_role_setup_custom_k8s_proxy/stacks/{{ ingress_nginx_api_filename }}"
+  command: |
+    kubectl apply -f  'https://raw.githubusercontent.com/dottgonzo/ansible-role-setup-custom-K8s-proxy/master/stacks/{{ ingress_nginx_api_filename }}>
+  changed_when: False
 
-- name: install Cert Manager
-  include_role:
-    name: dottgonzo.ansible_role_kubectl_from_local_file
-  vars:
-    local_file_path: '~/.ansible/roles/dottgonzo.ansible_role_setup_custom_k8s_proxy/cert-manager.yml'
+- name: Install Cert Manager
+  command: |
+    kubectl apply -f  'https://raw.githubusercontent.com/dottgonzo/ansible-role-setup-custom-K8s-proxy/master/stacks/cert-manager.yml>
+  changed_when: False
 
 - name: Wait for Running state
   register: proxyboot
