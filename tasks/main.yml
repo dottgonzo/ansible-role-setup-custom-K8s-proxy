@@ -1,10 +1,11 @@
 ---
+
 - name: Install Ingress Nginx
   include_role:
     name: dottgonzo.ansible_role_kubectl_from_local_file
   vars:
     local_file_path: "../stacks/{{ ingress_nginx_api_filename }}"
-      
+
 - name: install cert manager
   include_role:
     name: dottgonzo.ansible_role_kubectl_from_local_file
@@ -16,6 +17,7 @@
   register: proxyboot
 
   shell: |
+    set -o pipefail
     kubectl get pods -n cert-manager | grep -c Running
   until: proxyboot.stdout == '3'
   delay: 5
