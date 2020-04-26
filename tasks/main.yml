@@ -12,7 +12,6 @@
   vars:
     local_file_path: '../stacks/cert-manager.yml'
 
-
 - name: wait for proxies boot
   register: proxyboot
 
