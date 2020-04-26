@@ -5,7 +5,7 @@
 
 - name: Install Cert Manager
   command: |
-    kubectl apply -f  'https://raw.githubusercontent.com/dottgonzo/ansible-role-setup-custom-K8s-proxy/master/stacks/cert-manager.yml"
+    kubectl apply -f  'https://raw.githubusercontent.com/dottgonzo/ansible-role-setup-custom-K8s-proxy/master/stacks/cert-manager.yml'
   changed_when: False
 
 - name: Wait for Running state
