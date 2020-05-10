@@ -14,7 +14,53 @@
   shell: |
     set -o pipefail
     kubectl get pods -n cert-manager | grep -c Running
-  until: proxyboot.stdout == '3'
+  until: proxyboot.stdout == {{ ingress_nginx_num_of_services if ingress_nginx_num_of_services is defined else omit }}
   delay: 5
   retries: 100
   changed_when: false
+
+
+- name: Create Cert Manager Staging ClusterIssuer
+  k8s:
+    state: present
+    definition:
+      apiVersion: cert-manager.io/v1alpha2
+      kind: ClusterIssuer
+      metadata:
+        name: letsencrypt-prod
+      spec:
+        acme:
+          # The ACME server URL
+          server: https://acme-v02.api.letsencrypt.org/directory
+          # Email address used for ACME registration
+          email: "{{ acme_email }}"
+          # Name of a secret used to store the ACME account private key
+          privateKeySecretRef:
+            name: letsencrypt-prod
+          # Enable the HTTP-01 challenge provider
+          solvers: "{{ cert_manager_staging_cluster_solvers }}"
+  when:
+    - cert_manager_staging_cluster_solvers is defined
+
+
+- name: Create Cert Manager Production ClusterIssuer
+  k8s:
+    state: present
+    definition:
+      apiVersion: cert-manager.io/v1alpha2
+      kind: ClusterIssuer
+      metadata:
+        name: letsencrypt-prod
+      spec:
+        acme:
+          # The ACME server URL
+          server: https://acme-v02.api.letsencrypt.org/directory
+          # Email address used for ACME registration
+          email: "{{ acme_email }}"
+          # Name of a secret used to store the ACME account private key
+          privateKeySecretRef:
+            name: letsencrypt-prod
+          # Enable the HTTP-01 challenge provider
+          solvers: "{{ cert_manager_production_cluster_solvers }}"
+  when:
+    - cert_manager_production_cluster_solvers is defined
