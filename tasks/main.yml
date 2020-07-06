@@ -8,28 +8,28 @@
     kubectl apply -f  'https://raw.githubusercontent.com/dottgonzo/ansible-role-setup-custom-K8s-proxy/master/stacks/cert-manager.yml'
   changed_when: False
 
-- name: Wait for Running state
+- name: Wait for Cert Manager Running state
   register: proxyboot
 
   shell: |
     set -o pipefail
     kubectl get pods -n cert-manager | grep -c Running
-  until: proxyboot.stdout == {{ ingress_nginx_num_of_services if ingress_nginx_num_of_services is defined else omit }}
+  until: proxyboot.stdout|int > 1
   delay: 5
   retries: 100
   changed_when: false
 
-- name: Create Cert Manager SelfSigned ClusterIssuer
-  k8s:
-    state: present
-    definition:
-      apiVersion: cert-manager.io/v1alpha2
-      kind: Issuer
-      metadata:
-        name: selfsigned-issuer
-        namespace: sandbox
-      spec:
-        selfSigned: {}
+# - name: Create Cert Manager SelfSigned ClusterIssuer
+#   k8s:
+#     state: present
+#     definition:
+#       apiVersion: cert-manager.io/v1alpha2
+#       kind: Issuer
+#       metadata:
+#         name: selfsigned-issuer
+#         namespace: sandbox
+#       spec:
+#         selfSigned: {}
 
 
 - name: Create Cert Manager Staging ClusterIssuer
