@@ -8,13 +8,13 @@
     kubectl apply -f  'https://raw.githubusercontent.com/dottgonzo/ansible-role-setup-custom-K8s-proxy/master/stacks/cert-manager.yml'
   changed_when: False
 
-- name: Wait for Cert Manager Running state
+- name: Wait for Cert Manager Running State
   register: proxyboot
 
   shell: |
     set -o pipefail
     kubectl get pods -n cert-manager | grep -c Running
-  until: proxyboot.stdout|int > 1
+  until: proxyboot.stdout|int >= 1
   delay: 5
   retries: 100
   changed_when: false
