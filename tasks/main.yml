@@ -114,7 +114,7 @@
   shell: |
     set -o pipefail
     kubectl get pods -n cert-manager | grep webhook | grep -c Running
-  until: proxyboot.stdout|int > 1
+  until: proxyboot.stdout|int > 0
   delay: 5
   retries: 100
   changed_when: false
