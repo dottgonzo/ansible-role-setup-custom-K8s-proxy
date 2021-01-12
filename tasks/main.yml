@@ -103,11 +103,21 @@
   shell: |
     set -o pipefail
     kubectl get pods -n cert-manager | grep -c Running
-  until: proxyboot.stdout|int >= 1
+  until: proxyboot.stdout|int > 1
   delay: 5
   retries: 100
   changed_when: false
 
+- name: Wait for Cert Manager WebHook Running State
+  register: proxyboot
+
+  shell: |
+    set -o pipefail
+    kubectl get pods -n cert-manager | grep webhook | grep -c Running
+  until: proxyboot.stdout|int > 1
+  delay: 5
+  retries: 100
+  changed_when: false
 
 - name: Create Cert Manager SelfSigned ClusterIssuer
   k8s:
