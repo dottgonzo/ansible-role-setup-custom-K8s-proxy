@@ -95,8 +95,7 @@
   command: |
     kubectl apply -f  'https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager.yaml'
   changed_when: False
-  when:
-    - acme_email is defined
+
 
 - name: Wait for Cert Manager Running State
   register: proxyboot
@@ -108,9 +107,6 @@
   delay: 5
   retries: 100
   changed_when: false
-  when:
-    - acme_email is defined
-
 
 
 - name: Create Cert Manager SelfSigned ClusterIssuer
