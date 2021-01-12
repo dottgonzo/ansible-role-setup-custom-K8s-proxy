@@ -66,6 +66,12 @@
         compute-full-forwarded-for: "{{ true if production is defined else 'false' }}"
         use-proxy-protocol: "{{ true if production is defined else 'false' }}"
 
+- name: Install Ingress Nginx
+  command: "kubectl apply -f https://raw.githubusercontent.com/dottgonzo/ansible-role-setup-custom-K8s-proxy/master/stacks/nginx-main.yml"
+  changed_when: False
+  when:
+    - nodeHttpPort is defined
+    - nodeHttpsPort is defined
 
 - name: Wait for Nginx boot
   command: kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=120s
