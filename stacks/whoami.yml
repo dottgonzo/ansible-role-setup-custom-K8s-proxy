@@ -45,7 +45,7 @@ metadata:
 spec:
 
   rules:
-  - host: whoami.dev.kernel.online
+  - host: whoami.local
     http:
       paths:
       - path: /
