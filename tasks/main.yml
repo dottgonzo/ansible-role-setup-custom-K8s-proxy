@@ -130,4 +130,7 @@
         namespace: cert-manager
       spec:
         selfSigned: {}
-
+  retries: 4
+  delay: 10
+  register: result
+  until: result is not failed
