@@ -93,7 +93,7 @@
 
 - name: Install Cert Manager
   command: |
-    kubectl apply -f  'https://raw.githubusercontent.com/dottgonzo/ansible-role-setup-custom-K8s-proxy/master/stacks/cert-manager.yml'
+    kubectl apply -f  'https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager.yaml'
   changed_when: False
   when:
     - acme_email is defined
