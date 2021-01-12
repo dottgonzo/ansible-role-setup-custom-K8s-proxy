@@ -106,7 +106,6 @@
   until: proxyboot.stdout|int > 1
   delay: 5
   retries: 100
-  changed_when: false
 
 - name: Wait for Cert Manager WebHook Running State
   register: proxyboot
