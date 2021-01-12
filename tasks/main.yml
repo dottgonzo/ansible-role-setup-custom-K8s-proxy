@@ -1,12 +1,79 @@
 ---
+
+
 - name: Install Ingress Nginx
-  command: "kubectl apply -f https://raw.githubusercontent.com/dottgonzo/ansible-role-setup-custom-K8s-proxy/master/stacks/{{ ingress_nginx_api_filename }}"
+  command: "kubectl apply -f https://raw.githubusercontent.com/dottgonzo/ansible-role-setup-custom-K8s-proxy/master/stacks/nginx-main.yml"
   changed_when: False
+
+
+- name: Create Ingress-Nginx Service
+  k8s:
+    state: present
+    definition:
+
+      apiVersion: v1
+      kind: Service
+      metadata:
+        annotations:
+        labels:
+          helm.sh/chart: ingress-nginx-3.19.0
+          app.kubernetes.io/name: ingress-nginx
+          app.kubernetes.io/instance: ingress-nginx
+          app.kubernetes.io/version: 0.43.0
+          app.kubernetes.io/managed-by: Helm
+          app.kubernetes.io/component: controller
+        name: ingress-nginx-controller
+        namespace: ingress-nginx
+      spec:
+        type: NodePort
+        ports:
+          - name: http
+            port: 80
+            nodePort: "{{ nodeHttpPort }}"
+            protocol: TCP
+            targetPort: http
+          - name: https
+            port: 443
+            nodePort: "{{ nodeHttpsPort }}"
+            protocol: TCP
+            targetPort: https
+        selector:
+          app.kubernetes.io/name: ingress-nginx
+          app.kubernetes.io/instance: ingress-nginx
+          app.kubernetes.io/component: controller
+  when:
+    - nodeHttpPort is defined
+    - nodeHttpsPort is defined
+
+- name: Create Ingress-Nginx ConfigMap
+  k8s:
+    state: "present"
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        labels:
+          helm.sh/chart: ingress-nginx-3.19.0
+          app.kubernetes.io/name: ingress-nginx
+          app.kubernetes.io/instance: ingress-nginx
+          app.kubernetes.io/version: 0.43.0
+          app.kubernetes.io/managed-by: Helm
+          app.kubernetes.io/component: controller
+        name: ingress-nginx-controller
+        namespace: ingress-nginx
+      data:
+        use-forwarded-headers: "{{ true if production is defined else 'false' }}"
+        compute-full-forwarded-for: "{{ true if production is defined else 'false' }}"
+        use-proxy-protocol: "{{ true if production is defined else 'false' }}"
+
+
 
 - name: Install Cert Manager
   command: |
     kubectl apply -f  'https://raw.githubusercontent.com/dottgonzo/ansible-role-setup-custom-K8s-proxy/master/stacks/cert-manager.yml'
   changed_when: False
+  when:
+    - acme_email is defined
 
 - name: Wait for Cert Manager Running State
   register: proxyboot
@@ -18,6 +85,10 @@
   delay: 5
   retries: 100
   changed_when: false
+  when:
+    - acme_email is defined
+
+
 
 # - name: Create Cert Manager SelfSigned ClusterIssuer
 #   k8s:
@@ -53,6 +124,7 @@
           solvers: "{{ cert_manager_staging_cluster_solvers }}"
   when:
     - cert_manager_staging_cluster_solvers is defined
+    - acme_email is defined
 
 
 - name: Create Cert Manager Production ClusterIssuer
@@ -76,3 +148,4 @@
           solvers: "{{ cert_manager_production_cluster_solvers }}"
   when:
     - cert_manager_production_cluster_solvers is defined
+    - acme_email is defined
