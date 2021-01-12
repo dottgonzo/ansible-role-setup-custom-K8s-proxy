@@ -66,7 +66,6 @@
         compute-full-forwarded-for: "{{ true if production is defined else 'false' }}"
         use-proxy-protocol: "{{ true if production is defined else 'false' }}"
 
----
 
 - name: Wait for Nginx boot
   command: kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=120s
