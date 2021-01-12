@@ -82,7 +82,7 @@
     - nodeHttpsPort is defined
 
 
-- name: Install Ingress Nginx
+- name: Add whoami.local test app
   command: "kubectl apply -f https://raw.githubusercontent.com/dottgonzo/ansible-role-setup-custom-K8s-proxy/master/stacks/whoami.yml"
   changed_when: False
   when:
