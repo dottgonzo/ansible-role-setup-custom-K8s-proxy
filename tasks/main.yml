@@ -88,7 +88,10 @@
   when:
     - nodeHttpPort is defined
     - nodeHttpsPort is defined
-
+  retries: 20
+  delay: 10
+  register: result
+  until: result is not failed
 
 
 - name: Install Cert Manager
