@@ -72,8 +72,8 @@
     host: "localhost"
     port: "{{ nodeHttpPort }}"
     state: started         # Port should be open
-    retries: 120
-    delay: 5
+    delay: 0               # No wait before first check (sec)
+    timeout: 500
 
   changed_when: False
   when:
