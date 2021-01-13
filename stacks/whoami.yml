@@ -1,57 +1,55 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ingress-nginx
-  namespace: ingress-nginx
-
+  namespace: default
+  name: whoami
+  labels:
+    app: whoami
 spec:
+  replicas: 2
   selector:
     matchLabels:
-      run: ingress-nginx
-  replicas: 1
+      app: whoami
   template:
     metadata:
       labels:
-        run: ingress-nginx
+        app: whoami
     spec:
       containers:
-      - name: ingress-nginx
+      - name: whoami
         image: containous/whoami
         ports:
         - containerPort: 80
+          protocol: TCP
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: ingress-nginx
-  namespace: ingress-nginx
+  namespace: default
+  name: whoami
   labels:
-    run: ingress-nginx
+    app: whoami
 spec:
-  ports:
-  - port: 80
   selector:
-    run: ingress-nginx
-
+    app: whoami
+  ports:
+    - port: 80
+      protocol: TCP
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: whoami-ingress
-  namespace: ingress-nginx
+  namespace: default
+  name: whoami
   annotations:
-    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
-
 spec:
-
   rules:
   - host: whoami.local
     http:
       paths:
       - path: /
         backend:
-          serviceName: ingress-nginx
+          serviceName: whoami
           servicePort: 80
-
