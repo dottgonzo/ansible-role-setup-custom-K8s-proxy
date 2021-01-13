@@ -69,7 +69,7 @@
 - name: Wait for Nginx boot
 
   wait_for:
-    host: "http://localhost"
+    host: "localhost"
     port: "{{ nodeHttpPort }}"
     state: started         # Port should be open
     retries: 120
