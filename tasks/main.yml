@@ -62,9 +62,9 @@
         name: ingress-nginx-controller
         namespace: ingress-nginx
       data:
-        use-forwarded-headers: "{{ 'true' if production is defined else 'false' }}"
-        compute-full-forwarded-for: "{{ 'true' if production is defined else 'false' }}"
-        use-proxy-protocol: "{{ 'true' if production is defined else 'false' }}"
+        use-forwarded-headers: "{{ 'true' if with_loadbalancer_proxy_protocol is defined else 'false' }}"
+        compute-full-forwarded-for: "{{ 'true' if with_loadbalancer_proxy_protocol is defined else 'false' }}"
+        use-proxy-protocol: "{{ 'true' if with_loadbalancer_proxy_protocol is defined else 'false' }}"
 
 - name: Wait for Nginx boot
 
