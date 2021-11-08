@@ -26,10 +26,10 @@
         namespace: ingress-nginx
       spec:
         type: NodePort
-        externalTrafficPolicy: Local
-        ipFamilyPolicy: SingleStack
-        ipFamilies:
-          - IPv4
+        # externalTrafficPolicy: Local
+        # ipFamilyPolicy: SingleStack
+        # ipFamilies:
+        #   - IPv4
         ports:
           - name: http
             port: 80
