@@ -36,7 +36,7 @@ spec:
     - port: 80
       protocol: TCP
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   namespace: ingress-nginx
@@ -49,7 +49,10 @@ spec:
   - host: whoami.local
     http:
       paths:
-      - path: /
+      - pathType: Exact
+        path: /
         backend:
-          serviceName: whoami
-          servicePort: 80
+          service:
+            name: whoami
+            port: 
+              number: 80
