@@ -125,22 +125,6 @@
   retries: 100
   changed_when: false
 
-- name: Create Cert Manager SelfSigned Issuer
-  k8s:
-    state: present
-    definition:
-      apiVersion: cert-manager.io/v1
-      kind: Issuer
-      metadata:
-        name: selfsigned-issuer
-        namespace: sandbox
-      spec:
-        selfSigned: {}
-  retries: 20
-  delay: 10
-  register: result
-  until: result is not failed
-
 - name: Create Cert Manager SelfSigned ClusterIssuer
   k8s:
     state: present
