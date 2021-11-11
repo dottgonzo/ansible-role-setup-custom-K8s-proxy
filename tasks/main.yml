@@ -99,7 +99,7 @@
 
 - name: Install Cert Manager
   command: |
-    kubectl apply -f  'https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager.yaml'
+    kubectl apply -f  'https://github.com/jetstack/cert-manager/releases/download/v1.6.0/cert-manager.yaml'
   changed_when: False
 
 
@@ -125,15 +125,30 @@
   retries: 100
   changed_when: false
 
+- name: Create Cert Manager SelfSigned Issuer
+  k8s:
+    state: present
+    definition:
+      apiVersion: cert-manager.io/v1
+      kind: Issuer
+      metadata:
+        name: selfsigned-issuer
+        namespace: sandbox
+      spec:
+        selfSigned: {}
+  retries: 20
+  delay: 10
+  register: result
+  until: result is not failed
+
 - name: Create Cert Manager SelfSigned ClusterIssuer
   k8s:
     state: present
     definition:
-      apiVersion: cert-manager.io/v1alpha2
-      kind: Issuer
+      apiVersion: cert-manager.io/v1
+      kind: ClusterIssuer
       metadata:
-        name: selfsigned-issuer
-        namespace: cert-manager
+        name: selfsigned-cluster-issuer
       spec:
         selfSigned: {}
   retries: 20
